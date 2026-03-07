@@ -26,7 +26,7 @@ def upgrade() -> None:
         sa.Column("number_of_group", sa.String(), nullable=False),
         sa.Column("name", sa.String(), nullable=False),
         sa.Column("surname", sa.String(), nullable=False),
-        sa.Column("father_name", sa.String(), nullable=False),
+        sa.Column("father_name", sa.String(), nullable=True),
         sa.Column("phone_number", sa.Integer(), nullable=False),
         sa.Column("telegram_id", sa.String(), nullable=False),
         sa.Column("status", sa.String(), nullable=False),
