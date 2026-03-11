@@ -8,8 +8,14 @@ class RunConfig(BaseModel):
     port: int = 8000
 
 
+class ApiPrefix_v1(BaseModel):
+    prefix: str = "/librapi_v1"
+    students: str = "/students"
+
+
 class ApiPrefix(BaseModel):
     prefix: str = "/librapi"
+    v1: ApiPrefix_v1 = ApiPrefix_v1()
 
 
 class DatabaseConfig(BaseModel):
