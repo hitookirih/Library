@@ -17,3 +17,9 @@ class BookUpdate(BookBase):
 
 class BookRead(BookBase):
     id: int
+
+
+class BookUpdatePartial(BookBase):
+    title: str | None = None
+    author: str | None = None
+    description: str | None = None

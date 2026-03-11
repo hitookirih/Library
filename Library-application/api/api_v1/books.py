@@ -3,9 +3,10 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import db_helper
-from core.schemas.book import BookRead, BookCreate
+from core.models import db_helper, Book
+from core.schemas.book import BookRead, BookCreate, BookUpdate
 from crud import books as books_crud
+from crud.books import update_book, book_by_id
 
 router = APIRouter(tags=["Books"])
 
@@ -34,3 +35,23 @@ async def create_book(
         book_create=book_create,
     )
     return book
+
+
+@router.get("{book_id}", response_model=BookRead)
+async def get_book_by_id(
+    book: Book = Depends(book_by_id),
+) -> Book:
+    return book
+
+
+@router.put("{book_id}", response_model=BookRead)
+async def view_book_update(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    book_update: BookUpdate,
+    book: Book = Depends(book_by_id),
+) -> Book:
+    return await update_book(
+        session=session,
+        book=book,
+        book_update=book_update,
+    )

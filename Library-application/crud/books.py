@@ -1,10 +1,12 @@
-from typing import Sequence
+from typing import Sequence, Annotated
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import Book
-from core.schemas.book import BookCreate
+from fastapi import Path, Depends, HTTPException, status
+
+from core.models import Book, db_helper
+from core.schemas.book import BookCreate, BookUpdate, BookUpdatePartial
 
 
 async def get_book(session: AsyncSession, book_id: int) -> Book | None:
@@ -27,4 +29,28 @@ async def create_book(
     session.add(book)
     await session.commit()
     await session.refresh(book)
+    return book
+
+
+async def book_by_id(
+    book_id: Annotated[int, Path],
+    session: AsyncSession = Depends(db_helper.session_getter),
+) -> Book | None:
+    book = await get_book(session=session, book_id=book_id)
+    if book is not None:
+        return book
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail=f"Book {book_id} not found!"
+    )
+
+
+async def update_book(
+    session: AsyncSession,
+    book: Book,
+    book_update: BookUpdate | BookUpdatePartial,
+    partial: bool = False,
+) -> Book:
+    for name, value in book_update.model_dump(exclude_unset=partial).items():
+        setattr(book, name, value)
+        await session.commit()
     return book
