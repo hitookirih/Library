@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper, Student
@@ -11,7 +11,7 @@ from core.schemas.student import (
     StudentUpdatePartial,
 )
 from crud import students as students_crud
-from crud.students import student_by_id, update_student
+from crud.students import student_by_id, update_student, delete_student
 
 router = APIRouter(tags=["Students"])
 
@@ -34,7 +34,7 @@ async def get_student_by_id(
     return student
 
 
-@router.post("", response_model=StudentRead)
+@router.post("", response_model=StudentRead, status_code=status.HTTP_201_CREATED)
 async def create_student(
     session: Annotated[
         AsyncSession,
@@ -69,5 +69,19 @@ async def view_student_update_partial(
     student: Student = Depends(student_by_id),
 ) -> Student:
     return await update_student(
-        session=session, student=student, student_update=student_update, partial=True
+        session=session,
+        student=student,
+        student_update=student_update,
+        partial=True,
+    )
+
+
+@router.delete("{student_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_student_view(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    student: Student = Depends(student_by_id),
+) -> None:
+    return await delete_student(
+        session=session,
+        student=student,
     )
