@@ -11,6 +11,7 @@ class RunConfig(BaseModel):
 class ApiPrefix_v1(BaseModel):
     prefix: str = "/librapi_v1"
     students: str = "/students"
+    books: str = "/Books"
 
 
 class ApiPrefix(BaseModel):
