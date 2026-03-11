@@ -2,9 +2,10 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
 from .base import Base
+from .mixin.int_id_pk import IntIdPkMixin
 
 
-class Worker(Base):
+class Worker(IntIdPkMixin, Base):
 
     fullname: Mapped[str] = mapped_column(unique=False)
     phone_number: Mapped[int] = mapped_column(unique=False)

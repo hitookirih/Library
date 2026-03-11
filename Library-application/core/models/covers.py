@@ -5,12 +5,13 @@ from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
 
 from .base import Base
+from .mixin.int_id_pk import IntIdPkMixin
 
 if TYPE_CHECKING:
     from .books import Book
 
 
-class Cover(Base):
+class Cover(IntIdPkMixin, Base):
 
     book_id: Mapped[int] = mapped_column(ForeignKey("books.id"))
     filename: Mapped[str] = mapped_column(String(255))

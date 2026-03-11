@@ -2,9 +2,10 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
 from .base import Base
+from .mixin.int_id_pk import IntIdPkMixin
 
 
-class Student(Base):
+class Student(IntIdPkMixin, Base):
     number_of_studak: Mapped[int] = mapped_column(unique=True)
     number_of_group: Mapped[str] = mapped_column(unique=False)
     name: Mapped[str] = mapped_column(unique=False)
