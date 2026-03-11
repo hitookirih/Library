@@ -4,7 +4,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper, Student
-from core.schemas.student import StudentRead, StudentCreate, StudentUpdate
+from core.schemas.student import (
+    StudentRead,
+    StudentCreate,
+    StudentUpdate,
+    StudentUpdatePartial,
+)
 from crud import students as students_crud
 from crud.students import student_by_id, update_student
 
@@ -54,4 +59,15 @@ async def view_student_update(
         session=session,
         student=student,
         student_update=student_update,
+    )
+
+
+@router.patch("{student_id}", response_model=StudentRead)
+async def view_student_update_partial(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    student_update: StudentUpdatePartial,
+    student: Student = Depends(student_by_id),
+) -> Student:
+    return await update_student(
+        session=session, student=student, student_update=student_update, partial=True
     )
