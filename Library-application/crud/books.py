@@ -54,3 +54,8 @@ async def update_book(
         setattr(book, name, value)
         await session.commit()
     return book
+
+
+async def delete_book(session: AsyncSession, book: Book) -> None:
+    await session.delete(book)
+    await session.commit()

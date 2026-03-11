@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import db_helper, Book
 from core.schemas.book import BookRead, BookCreate, BookUpdate
 from crud import books as books_crud
-from crud.books import update_book, book_by_id
+from crud.books import update_book, book_by_id, delete_book
 
 router = APIRouter(tags=["Books"])
 
@@ -54,4 +54,29 @@ async def view_book_update(
         session=session,
         book=book,
         book_update=book_update,
+    )
+
+
+@router.patch("{book_id}", response_model=BookRead)
+async def view_book_update_partial(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    book_update: BookUpdate,
+    book: Book = Depends(book_by_id),
+) -> Book:
+    return await update_book(
+        session=session,
+        book=book,
+        book_update=book_update,
+        partial=True,
+    )
+
+
+@router.delete("{book_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_book_view(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    book: Book = Depends(book_by_id),
+) -> None:
+    return await delete_book(
+        session=session,
+        book=book,
     )
