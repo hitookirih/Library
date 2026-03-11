@@ -4,6 +4,7 @@ from core.config import settings
 
 from .students import router as students_router
 from .books import router as books_router
+from .workers import router as workers_router
 
 router = APIRouter(
     prefix=settings.api.v1.prefix,
@@ -17,3 +18,5 @@ router.include_router(
     books_router,
     prefix=settings.api.v1.books,
 )
+
+router.include_router(workers_router, prefix=settings.api.v1.workers)
